@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: RSS Aggregator API
+  version: 1.0.0
+
+paths:
+  /feeds:
+    post:
+      summary: Добавить новую RSS-ленту
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddFeedRequest'
+      responses:
+        '201':
+          description: Лента успешно добавлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedResponse'
+        '400':
+          description: Неверный запрос
+        '409':
+          description: Лента с таким URL уже существует
+
+components:
+  schemas:
+    AddFeedRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+          example: "https://example.com/rss"
+    FeedResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        publication_date:
+          type: string
+          format: date-time
+        is_read:
+          type: boolean
